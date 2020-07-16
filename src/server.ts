@@ -1,15 +1,14 @@
-import express, { Router, Request, Response } from 'express';
-import bodyParser from 'body-parser';
-import {filterImageFromURL, deleteLocalFiles} from './util/util';
+import express, { Router, Request, Response } from "express";
+import bodyParser from "body-parser";
+import { filterImageFromURL, deleteLocalFiles } from "./util/util";
 
 (async () => {
-
   // Init the Express application
   const app = express();
 
   // Set the network port
   const port = process.env.PORT || 8000;
-  
+
   // Use the body parser middleware for post requests
   app.use(bodyParser.json());
 
@@ -28,44 +27,44 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   //   the filtered image file [!!TIP res.sendFile(filteredpath); might be useful]
 
   /**************************************************************************** */
-  app.get( "/filteredimage", async ( req: Request, res: Response ) => {
+  app.get("/filteredimage", async (req: Request, res: Response) => {
     // destruct our query paramaters
     const { image_url } = req.query;
-    const unprocessable = `Error, unable to process image, kindly ensure thhe url is correct.`;
+    const unprocessable: string = `Error, unable to process image, kindly ensure thhe url is correct.`;
 
     if (!image_url) {
       return res.status(400).send(`image_url required`);
     }
 
     try {
-
-      const filteredImageUrl = await filterImageFromURL(image_url)
+      const filteredImageUrl: string = await filterImageFromURL(image_url);
 
       if (!filteredImageUrl) {
-        return res.status(400).send("Error filtering image")
+        return res.status(400).send("Error filtering image");
       }
 
       res.status(200).sendFile(filteredImageUrl, {}, (err) => {
-        if (err) { return res.status(422).send(unprocessable); }
-        deleteLocalFiles([filteredImageUrl])
-      })
+        if (err) {
+          return res.status(422).send(unprocessable);
+        }
+        deleteLocalFiles([filteredImageUrl]);
+      });
     } catch (err) {
       res.status(422).send(unprocessable);
     }
-  } );
+  });
 
   //! END @TODO1
-  
+
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req: Request, res: Response ) => {
-    res.send("try GET /filteredimage?image_url={{}}")
-  } );
-  
+  app.get("/", async (req: Request, res: Response) => {
+    res.send("try GET /filteredimage?image_url={{}}");
+  });
 
   // Start the Server
-  app.listen( port, () => {
-      console.log( `server running http://localhost:${ port }` );
-      console.log( `press CTRL+C to stop server` );
-  } );
+  app.listen(port, () => {
+    console.log(`server running http://localhost:${port}`);
+    console.log(`press CTRL+C to stop server`);
+  });
 })();
