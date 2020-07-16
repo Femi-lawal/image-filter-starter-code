@@ -6,12 +6,12 @@
 	},
 	"item": [
 		{
-			"name": "http://localhost:8000/filteredimage?image_url=https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+			"name": "http://localhost:8000/filteredimage?image_url=https://upload.wikimedia.org/wikipedia/commons/b/bd/Golden_tabby_and_white_kitten_n01.jpg",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://{{HOST}}/filteredimage?image_url=https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+					"raw": "http://{{HOST}}/filteredimage?image_url=https://upload.wikimedia.org/wikipedia/commons/b/bd/Golden_tabby_and_white_kitten_n01.jpg",
 					"protocol": "http",
 					"host": [
 						"{{HOST}}"
@@ -22,7 +22,7 @@
 					"query": [
 						{
 							"key": "image_url",
-							"value": "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg"
+							"value": "https://upload.wikimedia.org/wikipedia/commons/b/bd/Golden_tabby_and_white_kitten_n01.jpg"
 						}
 					]
 				}
