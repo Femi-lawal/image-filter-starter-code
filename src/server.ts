@@ -1,7 +1,6 @@
 import express, { Router, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import {filterImageFromURL, deleteLocalFiles} from './util/util';
-import querystring from 'querystring'; 
 
 (async () => {
 
@@ -31,24 +30,27 @@ import querystring from 'querystring';
   /**************************************************************************** */
   app.get( "/filteredimage", async ( req: Request, res: Response ) => {
     // destruct our query paramaters
-    let { image_url } = req.query;
-    
-    let makeString: string = querystring.stringify(image_url);
+    const { image_url } = req.query;
+    const unprocessable = `Error, unable to process image, kindly ensure thhe url is correct.`;
 
     if (!image_url) {
-      return res.status(400).send(`image_url is required`);
+      return res.status(400).send(`image_url required`);
     }
 
     try {
-      const filteredpath = await filterImageFromURL(image_url)
 
-      await res.status(200).sendFile(filteredpath, {}, (err) => {
-        if (err) { return res.status(422).send(`Not able to process the image`); }
-        // Deleting the used image file.
-        deleteLocalFiles([filteredpath])
+      const filteredImageUrl = await filterImageFromURL(image_url)
+
+      if (!filteredImageUrl) {
+        return res.status(400).send("Error filtering image")
+      }
+
+      res.status(200).sendFile(filteredImageUrl, {}, (err) => {
+        if (err) { return res.status(422).send(unprocessable); }
+        deleteLocalFiles([filteredImageUrl])
       })
     } catch (err) {
-      res.status(422).send(`Not able to process the image, Make sure image url is correct`);
+      res.status(422).send(unprocessable);
     }
   } );
 
@@ -56,7 +58,7 @@ import querystring from 'querystring';
   
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/", async ( req, res ) => {
+  app.get( "/", async ( req: Request, res: Response ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
   
